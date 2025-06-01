@@ -1,0 +1,282 @@
+
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/store/store';
+import { 
+  setSearchTerm, 
+  setStatusFilter, 
+  setPriorityFilter, 
+  setSortBy,
+  addLead,
+  Lead 
+} from '@/store/slices/leadsSlice';
+import { LeadsTable } from '@/components/LeadsTable';
+import { LeadDetailsModal } from '@/components/LeadDetailsModal';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Search, Plus, Filter } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+
+export default function Leads() {
+  const dispatch = useDispatch();
+  const { filteredLeads, searchTerm, statusFilter, priorityFilter } = useSelector((state: RootState) => state.leads);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newLead, setNewLead] = useState({
+    customerName: '',
+    customerType: 'Residential' as 'Residential' | 'Commercial',
+    email: '',
+    phone: '',
+    address: '',
+    serviceDetails: '',
+    problemDescription: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    estimatedValue: 0,
+    status: 'lead' as 'lead' | 'quote' | 'contract',
+    lastContact: 'Just now',
+    services: [] as string[]
+  });
+
+  const handleViewDetails = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleAddLead = () => {
+    if (!newLead.customerName || !newLead.email || !newLead.phone) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    dispatch(addLead(newLead));
+    setIsAddModalOpen(false);
+    setNewLead({
+      customerName: '',
+      customerType: 'Residential',
+      email: '',
+      phone: '',
+      address: '',
+      serviceDetails: '',
+      problemDescription: '',
+      priority: 'medium',
+      estimatedValue: 0,
+      status: 'lead',
+      lastContact: 'Just now',
+      services: []
+    });
+    
+    toast({
+      title: "Lead Added",
+      description: "New lead has been successfully added to the system.",
+    });
+  };
+
+  const serviceOptions = [
+    'Initial Inspection',
+    'Ant Treatment',
+    'Cockroach Control',
+    'Rodent Control',
+    'Termite Treatment',
+    'Bee Removal',
+    'Fly Control',
+    'Spider Control',
+    'Preventive Treatment'
+  ];
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Pest Control Leads</h1>
+          <p className="text-muted-foreground">({filteredLeads.length})</p>
+        </div>
+        <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Lead
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl bg-card border border-border">
+            <DialogHeader>
+              <DialogTitle>Add New Lead</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="customerName">Customer Name *</Label>
+                <Input
+                  id="customerName"
+                  value={newLead.customerName}
+                  onChange={(e) => setNewLead({...newLead, customerName: e.target.value})}
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="customerType">Customer Type</Label>
+                <Select
+                  value={newLead.customerType}
+                  onValueChange={(value: 'Residential' | 'Commercial') => 
+                    setNewLead({...newLead, customerType: value})
+                  }
+                >
+                  <SelectTrigger className="bg-background border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border border-border">
+                    <SelectItem value="Residential">Residential</SelectItem>
+                    <SelectItem value="Commercial">Commercial</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={newLead.email}
+                  onChange={(e) => setNewLead({...newLead, email: e.target.value})}
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone *</Label>
+                <Input
+                  id="phone"
+                  value={newLead.phone}
+                  onChange={(e) => setNewLead({...newLead, phone: e.target.value})}
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={newLead.address}
+                  onChange={(e) => setNewLead({...newLead, address: e.target.value})}
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="priority">Priority</Label>
+                <Select
+                  value={newLead.priority}
+                  onValueChange={(value: 'low' | 'medium' | 'high') => 
+                    setNewLead({...newLead, priority: value})
+                  }
+                >
+                  <SelectTrigger className="bg-background border-border">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border border-border">
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="estimatedValue">Estimated Value ($)</Label>
+                <Input
+                  id="estimatedValue"
+                  type="number"
+                  value={newLead.estimatedValue}
+                  onChange={(e) => setNewLead({...newLead, estimatedValue: Number(e.target.value)})}
+                  className="bg-background border-border"
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label htmlFor="problemDescription">Problem Description</Label>
+                <Textarea
+                  id="problemDescription"
+                  value={newLead.problemDescription}
+                  onChange={(e) => setNewLead({...newLead, problemDescription: e.target.value, serviceDetails: e.target.value})}
+                  className="bg-background border-border"
+                  rows={3}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleAddLead} className="bg-blue-600 hover:bg-blue-700">
+                Add Lead
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="flex gap-4 items-center">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search leads..."
+            value={searchTerm}
+            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+            className="pl-10 bg-background border-border"
+          />
+        </div>
+        
+        <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value))}>
+          <SelectTrigger className="w-40 bg-background border-border">
+            <Filter className="w-4 h-4 mr-2" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-popover border border-border">
+            <SelectItem value="All">Status: All</SelectItem>
+            <SelectItem value="Lead">Lead</SelectItem>
+            <SelectItem value="Quote">Quote</SelectItem>
+            <SelectItem value="Contract">Contract</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={priorityFilter} onValueChange={(value) => dispatch(setPriorityFilter(value))}>
+          <SelectTrigger className="w-40 bg-background border-border">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="bg-popover border border-border">
+            <SelectItem value="All">Priority: All</SelectItem>
+            <SelectItem value="High">High</SelectItem>
+            <SelectItem value="Medium">Medium</SelectItem>
+            <SelectItem value="Low">Low</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select onValueChange={(value) => dispatch(setSortBy(value))}>
+          <SelectTrigger className="w-32 bg-background border-border">
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent className="bg-popover border border-border">
+            <SelectItem value="createdAt">Date</SelectItem>
+            <SelectItem value="value">Value</SelectItem>
+            <SelectItem value="priority">Priority</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <LeadsTable onViewDetails={handleViewDetails} />
+
+      <LeadDetailsModal
+        lead={selectedLead}
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+      />
+    </div>
+  );
+}
