@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -33,6 +32,7 @@ export default function Leads() {
   const { filteredLeads, searchTerm, statusFilter, priorityFilter } = useSelector((state: RootState) => state.leads);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isQuotationModalOpen, setIsQuotationModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newLead, setNewLead] = useState({
     customerName: '',
@@ -52,6 +52,11 @@ export default function Leads() {
   const handleViewDetails = (lead: Lead) => {
     setSelectedLead(lead);
     setIsDetailsModalOpen(true);
+  };
+
+  const handleCreateQuotation = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsQuotationModalOpen(true);
   };
 
   const handleAddLead = () => {
@@ -271,12 +276,21 @@ export default function Leads() {
         </Select>
       </div>
 
-      <LeadsTable onViewDetails={handleViewDetails} />
+      <LeadsTable 
+        onViewDetails={handleViewDetails} 
+        onCreateQuotation={handleCreateQuotation}
+      />
 
       <LeadDetailsModal
         lead={selectedLead}
         isOpen={isDetailsModalOpen}
         onClose={() => setIsDetailsModalOpen(false)}
+      />
+
+      <QuotationModal
+        lead={selectedLead}
+        isOpen={isQuotationModalOpen}
+        onClose={() => setIsQuotationModalOpen(false)}
       />
     </div>
   );
