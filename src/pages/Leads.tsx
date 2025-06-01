@@ -12,6 +12,7 @@ import {
 } from '@/store/slices/leadsSlice';
 import { LeadsTable } from '@/components/LeadsTable';
 import { LeadDetailsModal } from '@/components/LeadDetailsModal';
+import { QuotationModal } from '@/components/QuotationModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 

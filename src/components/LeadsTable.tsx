@@ -13,67 +13,77 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Lead } from '@/store/slices/leadsSlice';
+import { Eye, FileText, Phone, Mail, MapPin, Building, Home, User } from 'lucide-react';
 
 interface LeadsTableProps {
   onViewDetails: (lead: Lead) => void;
+  onCreateQuotation: (lead: Lead) => void;
 }
 
-export function LeadsTable({ onViewDetails }: LeadsTableProps) {
+export function LeadsTable({ onViewDetails, onCreateQuotation }: LeadsTableProps) {
   const dispatch = useDispatch();
   const { filteredLeads } = useSelector((state: RootState) => state.leads);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-
-  const salesPeople = ['Sarah Johnson', 'John Martinez', 'Mike Wilson', 'Lisa Chen'];
-
-  const handleAssignSalesPerson = (leadId: string, salesPerson: string) => {
-    dispatch(updateLead({ id: leadId, salesPerson }));
-  };
-
-  const handleConvertToQuotation = (leadId: string) => {
-    dispatch(convertToQuotation(leadId));
-  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-900/20 text-red-400 border-red-800';
-      case 'medium': return 'bg-yellow-900/20 text-yellow-400 border-yellow-800';
-      case 'low': return 'bg-green-900/20 text-green-400 border-green-800';
-      default: return 'bg-gray-900/20 text-gray-400 border-gray-800';
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'lead': return 'bg-blue-900/20 text-blue-400 border-blue-800';
-      case 'quote': return 'bg-yellow-900/20 text-yellow-400 border-yellow-800';
-      case 'contract': return 'bg-green-900/20 text-green-400 border-green-800';
-      default: return 'bg-gray-900/20 text-gray-400 border-gray-800';
+      case 'lead': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'quote': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'contract': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
+  };
+
+  const getCustomerIcon = (type: string) => {
+    return type === 'Commercial' ? <Building className="w-4 h-4" /> : <Home className="w-4 h-4" />;
   };
 
   return (
     <Card className="bg-card border border-border/40">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border/40">
-              <th className="text-left p-4 font-semibold text-sm">Customer</th>
-              <th className="text-left p-4 font-semibold text-sm">Service Details</th>
-              <th className="text-left p-4 font-semibold text-sm">Contact</th>
-              <th className="text-left p-4 font-semibold text-sm">Status</th>
-              <th className="text-left p-4 font-semibold text-sm">Value</th>
-              <th className="text-left p-4 font-semibold text-sm">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLeads.map((lead) => (
-              <tr key={lead.id} className="border-b border-border/20 hover:bg-accent/50">
-                <td className="p-4">
+      <Table>
+        <TableHeader>
+          <TableRow className="border-b border-border/40">
+            <TableHead className="text-left p-4 font-semibold text-sm">Customer</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Service Details</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Contact</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Lead By</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Assigned To</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Status</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Value</TableHead>
+            <TableHead className="text-left p-4 font-semibold text-sm">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredLeads.map((lead) => (
+            <TableRow key={lead.id} className="border-b border-border/20 hover:bg-accent/50">
+              <TableCell className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
+                    {getCustomerIcon(lead.customerType)}
+                  </div>
                   <div className="space-y-1">
                     <div className="font-medium">{lead.customerName}</div>
-                    <div className="text-sm text-muted-foreground">{lead.customerType}</div>
+                    <div className="text-sm text-muted-foreground flex items-center gap-1">
+                      {getCustomerIcon(lead.customerType)}
+                      {lead.customerType}
+                    </div>
                     <Badge 
                       variant="outline" 
                       className={`text-xs ${getPriorityColor(lead.priority)}`}
@@ -81,75 +91,79 @@ export function LeadsTable({ onViewDetails }: LeadsTableProps) {
                       {lead.priority} priority
                     </Badge>
                   </div>
-                </td>
-                <td className="p-4">
-                  <div className="space-y-1">
-                    <div className="font-medium text-sm">{lead.serviceDetails}</div>
-                    <div className="text-sm text-muted-foreground">{lead.address}</div>
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="space-y-1">
+                  <div className="font-medium text-sm">{lead.serviceDetails}</div>
+                  <div className="text-sm text-muted-foreground flex items-center gap-1">
+                    <MapPin className="w-3 h-3" />
+                    {lead.address}
                   </div>
-                </td>
-                <td className="p-4">
-                  <div className="space-y-1">
-                    <div className="text-sm">{lead.phone}</div>
-                    <div className="text-sm text-muted-foreground">{lead.email}</div>
-                    <div className="text-xs text-muted-foreground">{lead.lastContact}</div>
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="space-y-1">
+                  <div className="text-sm flex items-center gap-1">
+                    <Phone className="w-3 h-3" />
+                    {lead.phone}
                   </div>
-                </td>
-                <td className="p-4">
-                  <Badge 
-                    variant="outline" 
-                    className={getStatusColor(lead.status)}
+                  <div className="text-sm text-muted-foreground flex items-center gap-1">
+                    <Mail className="w-3 h-3" />
+                    {lead.email}
+                  </div>
+                  <div className="text-xs text-muted-foreground">{lead.lastContact}</div>
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  Website Form
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="text-sm flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  {lead.salesPerson || 'Unassigned'}
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <Badge 
+                  variant="outline" 
+                  className={getStatusColor(lead.status)}
+                >
+                  {lead.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="font-semibold text-green-600">
+                  ${lead.estimatedValue.toLocaleString()}
+                </div>
+              </TableCell>
+              <TableCell className="p-4">
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onViewDetails(lead)}
+                    className="p-2"
                   >
-                    {lead.status}
-                  </Badge>
-                </td>
-                <td className="p-4">
-                  <div className="font-semibold text-green-400">
-                    ${lead.estimatedValue.toLocaleString()}
-                  </div>
-                </td>
-                <td className="p-4">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onViewDetails(lead)}
-                    >
-                      View
-                    </Button>
-                    {lead.status === 'lead' && (
-                      <>
-                        <Select
-                          value={lead.salesPerson || ''}
-                          onValueChange={(value) => handleAssignSalesPerson(lead.id, value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue placeholder="Assign" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-popover border border-border">
-                            {salesPeople.map((person) => (
-                              <SelectItem key={person} value={person}>
-                                {person}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          size="sm"
-                          onClick={() => handleConvertToQuotation(lead.id)}
-                          className="bg-blue-600 hover:bg-blue-700"
-                        >
-                          Quote
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                    <Eye className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onCreateQuotation(lead)}
+                    className="p-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </Card>
   );
 }

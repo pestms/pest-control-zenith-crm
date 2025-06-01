@@ -1,9 +1,20 @@
 
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Lead } from '@/store/slices/leadsSlice';
-import { Phone, Mail, MapPin, User, Calendar, DollarSign } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Lead, updateLead } from '@/store/slices/leadsSlice';
+import { Phone, Mail, MapPin, User, Calendar, DollarSign, UserCheck } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface LeadDetailsModalProps {
   lead: Lead | null;
@@ -12,7 +23,22 @@ interface LeadDetailsModalProps {
 }
 
 export function LeadDetailsModal({ lead, isOpen, onClose }: LeadDetailsModalProps) {
+  const dispatch = useDispatch();
+  const [selectedSalesPerson, setSelectedSalesPerson] = useState(lead?.salesPerson || '');
+
+  const salesPeople = ['Sarah Johnson', 'John Martinez', 'Mike Wilson', 'Lisa Chen'];
+
   if (!lead) return null;
+
+  const handleAssignSalesPerson = () => {
+    if (selectedSalesPerson && lead) {
+      dispatch(updateLead({ id: lead.id, salesPerson: selectedSalesPerson }));
+      toast({
+        title: "Sales Person Assigned",
+        description: `${lead.customerName} has been assigned to ${selectedSalesPerson}.`,
+      });
+    }
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -82,13 +108,45 @@ export function LeadDetailsModal({ lead, isOpen, onClose }: LeadDetailsModalProp
                   <span className="text-sm font-medium text-muted-foreground">Problem Description:</span>
                   <p className="mt-1">{lead.problemDescription}</p>
                 </div>
-                <div>
-                  <span className="text-sm font-medium text-muted-foreground">Sales Person:</span>
-                  <p className="mt-1">{lead.salesPerson || 'Not assigned'}</p>
-                </div>
                 <div className="flex items-center gap-3">
                   <DollarSign className="w-4 h-4 text-muted-foreground" />
                   <span>Estimated Value: <span className="font-semibold text-green-400">${lead.estimatedValue}</span></span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-6 bg-accent/30">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <UserCheck className="w-5 h-5" />
+                Assignment
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Currently Assigned:</span>
+                  <p className="mt-1 font-medium">{lead.salesPerson || 'Unassigned'}</p>
+                </div>
+                <div className="space-y-2">
+                  <span className="text-sm font-medium text-muted-foreground">Assign to Sales Person:</span>
+                  <div className="flex gap-2">
+                    <Select
+                      value={selectedSalesPerson}
+                      onValueChange={setSelectedSalesPerson}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select sales person" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border border-border">
+                        {salesPeople.map((person) => (
+                          <SelectItem key={person} value={person}>
+                            {person}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button onClick={handleAssignSalesPerson} size="sm">
+                      Assign
+                    </Button>
+                  </div>
                 </div>
               </div>
             </Card>
