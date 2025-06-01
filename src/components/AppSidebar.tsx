@@ -1,5 +1,5 @@
 
-import { Home, Users, FileText, Settings, BarChart3 } from 'lucide-react';
+import { Home, Users, FileText, Settings, BarChart3, UserCheck } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +19,7 @@ const menuItems = [
   { title: 'Leads', url: '/leads', icon: Users },
   { title: 'Quotations', url: '/quotations', icon: FileText },
   { title: 'Analytics', url: '/analytics', icon: BarChart3 },
+  { title: 'User Management', url: '/users', icon: UserCheck },
   { title: 'Settings', url: '/settings', icon: Settings },
 ];
 

@@ -11,6 +11,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
 import Quotations from "./pages/Quotations";
+import Analytics from "./pages/Analytics";
+import UserManagement from "./pages/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +36,8 @@ const App = () => (
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/leads" element={<Leads />} />
                     <Route path="/quotations" element={<Quotations />} />
+                    <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/users" element={<UserManagement />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
