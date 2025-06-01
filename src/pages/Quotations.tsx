@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -9,6 +8,8 @@ import {
   updateQuotation,
   convertToContract 
 } from '@/store/slices/quotationsSlice';
+import { StatsContainer } from '@/components/StatsContainer';
+import { useQuotationStats } from '@/hooks/useQuotationStats';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,13 +24,15 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, FileText, CheckCircle, XCircle, Edit } from 'lucide-react';
+import { Search, Plus, FileText, CheckCircle, XCircle, Edit, Clock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 export default function Quotations() {
   const dispatch = useDispatch();
   const { filteredQuotations, searchTerm, statusFilter } = useSelector((state: RootState) => state.quotations);
   const { leads } = useSelector((state: RootState) => state.leads);
+  const quotationStats = useQuotationStats();
+  
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -138,6 +141,37 @@ export default function Quotations() {
     updatedServices[index].included = !updatedServices[index].included;
     setNewQuotation({ ...newQuotation, services: updatedServices });
   };
+
+  const statsData = [
+    {
+      title: "Total Quotations",
+      value: quotationStats.totalQuotations,
+      change: "+18% from last month",
+      icon: <FileText className="w-6 h-6" />,
+      trend: 'up' as const
+    },
+    {
+      title: "In Progress",
+      value: quotationStats.pendingQuotations,
+      change: "+10% from last month",
+      icon: <Clock className="w-6 h-6" />,
+      trend: 'up' as const
+    },
+    {
+      title: "Rejected",
+      value: quotationStats.rejectedQuotations,
+      change: "-12% from last month",
+      icon: <XCircle className="w-6 h-6" />,
+      trend: 'down' as const
+    },
+    {
+      title: "Converted to Contracts",
+      value: quotationStats.convertedToContract,
+      change: "+25% from last month",
+      icon: <CheckCircle className="w-6 h-6" />,
+      trend: 'up' as const
+    }
+  ];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -286,6 +320,8 @@ export default function Quotations() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <StatsContainer stats={statsData} />
 
       <div className="flex gap-4 items-center">
         <div className="relative flex-1 max-w-md">

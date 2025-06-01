@@ -12,6 +12,8 @@ import {
 import { LeadsTable } from '@/components/LeadsTable';
 import { LeadDetailsModal } from '@/components/LeadDetailsModal';
 import { QuotationModal } from '@/components/QuotationModal';
+import { StatsContainer } from '@/components/StatsContainer';
+import { useLeadStats } from '@/hooks/useLeadStats';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -24,12 +26,14 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, Filter } from 'lucide-react';
+import { Search, Plus, Filter, Users, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 export default function Leads() {
   const dispatch = useDispatch();
   const { filteredLeads, searchTerm, statusFilter, priorityFilter } = useSelector((state: RootState) => state.leads);
+  const leadStats = useLeadStats();
+  
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isQuotationModalOpen, setIsQuotationModalOpen] = useState(false);
@@ -102,6 +106,37 @@ export default function Leads() {
     'Fly Control',
     'Spider Control',
     'Preventive Treatment'
+  ];
+
+  const statsData = [
+    {
+      title: "Total Leads",
+      value: leadStats.totalLeads,
+      change: "+12% from last month",
+      icon: <Users className="w-6 h-6" />,
+      trend: 'up' as const
+    },
+    {
+      title: "Hot Leads",
+      value: leadStats.hotLeads,
+      change: "+8% from last month",
+      icon: <TrendingUp className="w-6 h-6" />,
+      trend: 'up' as const
+    },
+    {
+      title: "Closed Deals",
+      value: leadStats.closedLeads,
+      change: "+15% from last month",
+      icon: <CheckCircle className="w-6 h-6" />,
+      trend: 'up' as const
+    },
+    {
+      title: "Lost Leads",
+      value: leadStats.lostLeads,
+      change: "-5% from last month",
+      icon: <XCircle className="w-6 h-6" />,
+      trend: 'down' as const
+    }
   ];
 
   return (
@@ -227,6 +262,8 @@ export default function Leads() {
           </DialogContent>
         </Dialog>
       </div>
+
+      <StatsContainer stats={statsData} />
 
       <div className="flex gap-4 items-center">
         <div className="relative flex-1 max-w-md">
