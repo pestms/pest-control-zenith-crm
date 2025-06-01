@@ -2,6 +2,7 @@
 import { StatsCard } from '@/components/StatsCard';
 import { LeadSourceChart } from '@/components/LeadSourceChart';
 import { ConversionFlowChart } from '@/components/ConversionFlowChart';
+import { TeamPerformance } from '@/components/TeamPerformance';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { DollarSign, FileText, Target, TrendingUp } from 'lucide-react';
@@ -67,6 +68,8 @@ export default function Dashboard() {
         <LeadSourceChart />
         <ConversionFlowChart />
       </div>
+
+      <TeamPerformance />
     </div>
   );
 }

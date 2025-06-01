@@ -2,6 +2,23 @@
 import { Card } from '@/components/ui/card';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+
+const chartConfig = {
+  leads: {
+    label: "Leads",
+    color: "#3B82F6",
+  },
+  quotations: {
+    label: "Quotations", 
+    color: "#F59E0B",
+  },
+  contracts: {
+    label: "Contracts",
+    color: "#10B981",
+  },
+};
 
 export function ConversionFlowChart() {
   const { conversionFlow } = useSelector((state: RootState) => state.dashboard);
@@ -25,7 +42,7 @@ export function ConversionFlowChart() {
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-3 h-3 bg-green-400 rounded-full"></div>
           <span className="text-sm font-medium">{conversionFlow.conversionRate}% Conversion Rate</span>
@@ -33,32 +50,41 @@ export function ConversionFlowChart() {
         <p className="text-sm text-muted-foreground">{conversionFlow.bestMonth}</p>
       </div>
 
-      <div className="space-y-4">
-        <h4 className="text-sm font-semibold">Monthly Breakdown</h4>
-        {conversionFlow.monthlyData.map((month) => (
-          <div key={month.month} className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="font-medium">{month.month}</span>
-              <span className="text-muted-foreground">
-                {month.leads} → {month.quotations} → {month.contracts}
-              </span>
-            </div>
-            <div className="flex gap-1 h-2">
-              <div
-                className="bg-blue-400 rounded-sm"
-                style={{ width: `${(month.leads / 100) * 100}%` }}
-              />
-              <div
-                className="bg-yellow-400 rounded-sm"
-                style={{ width: `${(month.quotations / 100) * 100}%` }}
-              />
-              <div
-                className="bg-green-400 rounded-sm"
-                style={{ width: `${(month.contracts / 100) * 100}%` }}
-              />
-            </div>
-          </div>
-        ))}
+      <div className="h-64 mb-4">
+        <ChartContainer config={chartConfig}>
+          <BarChart data={conversionFlow.monthlyData}>
+            <XAxis 
+              dataKey="month" 
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis 
+              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <Bar dataKey="leads" fill="var(--color-leads)" radius={[2, 2, 0, 0]} />
+            <Bar dataKey="quotations" fill="var(--color-quotations)" radius={[2, 2, 0, 0]} />
+            <Bar dataKey="contracts" fill="var(--color-contracts)" radius={[2, 2, 0, 0]} />
+          </BarChart>
+        </ChartContainer>
+      </div>
+
+      <div className="flex items-center justify-center gap-6 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-blue-400 rounded"></div>
+          <span>Leads</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-yellow-400 rounded"></div>
+          <span>Quotations</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-green-400 rounded"></div>
+          <span>Contracts</span>
+        </div>
       </div>
     </Card>
   );
