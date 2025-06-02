@@ -6,7 +6,8 @@ import {
   setStatusFilter, 
   addQuotation,
   updateQuotation,
-  convertToContract 
+  convertToContract,
+  toggleShowAllVersions
 } from '@/store/slices/quotationsSlice';
 import { StatsContainer } from '@/components/StatsContainer';
 import { useQuotationStats } from '@/hooks/useQuotationStats';
@@ -24,18 +25,21 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Plus, FileText, CheckCircle, XCircle, Edit, Clock } from 'lucide-react';
+import { Search, Plus, FileText, CheckCircle, XCircle, Edit, Clock, History, RotateCcw } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { QuotationVersions } from '@/components/QuotationVersions';
+import { CreateRevisionModal } from '@/components/CreateRevisionModal';
 
 export default function Quotations() {
   const dispatch = useDispatch();
-  const { filteredQuotations, searchTerm, statusFilter } = useSelector((state: RootState) => state.quotations);
+  const { filteredQuotations, searchTerm, statusFilter, showAllVersions } = useSelector((state: RootState) => state.quotations);
   const { leads } = useSelector((state: RootState) => state.leads);
   const quotationStats = useQuotationStats();
   
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedQuotation, setSelectedQuotation] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isRevisionModalOpen, setIsRevisionModalOpen] = useState(false);
 
   const availableLeads = leads.filter(lead => lead.status === 'lead');
 
@@ -60,6 +64,13 @@ export default function Quotations() {
     validUntil: '',
     notes: ''
   });
+
+  const getVersionDisplay = (quotation: any) => {
+    if (quotation.version === 1 && !quotation.parentQuotationId) {
+      return 'Original';
+    }
+    return `v${quotation.version}`;
+  };
 
   const handleAddQuotation = () => {
     if (!newQuotation.customerName || !newQuotation.email) {
@@ -180,145 +191,155 @@ export default function Quotations() {
           <h1 className="text-3xl font-bold tracking-tight">Quotations</h1>
           <p className="text-muted-foreground">({filteredQuotations.length})</p>
         </div>
-        <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="w-4 h-4 mr-2" />
-              Add New Quotation
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
-            <DialogHeader>
-              <DialogTitle>Create New Quotation</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="customerName">Customer Name *</Label>
-                  <Input
-                    id="customerName"
-                    value={newQuotation.customerName}
-                    onChange={(e) => setNewQuotation({...newQuotation, customerName: e.target.value})}
-                    className="bg-background border-border"
-                  />
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => dispatch(toggleShowAllVersions())}
+            className="flex items-center gap-2"
+          >
+            <History className="w-4 h-4" />
+            {showAllVersions ? 'Show Latest Only' : 'Show All Versions'}
+          </Button>
+          <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Quotation
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
+              <DialogHeader>
+                <DialogTitle>Create New Quotation</DialogTitle>
+              </DialogHeader>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="customerName">Customer Name *</Label>
+                    <Input
+                      id="customerName"
+                      value={newQuotation.customerName}
+                      onChange={(e) => setNewQuotation({...newQuotation, customerName: e.target.value})}
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={newQuotation.email}
+                      onChange={(e) => setNewQuotation({...newQuotation, email: e.target.value})}
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      value={newQuotation.phone}
+                      onChange={(e) => setNewQuotation({...newQuotation, phone: e.target.value})}
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                      id="address"
+                      value={newQuotation.address}
+                      onChange={(e) => setNewQuotation({...newQuotation, address: e.target.value})}
+                      className="bg-background border-border"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="salesPerson">Sales Person</Label>
+                    <Select
+                      value={newQuotation.salesPerson}
+                      onValueChange={(value) => setNewQuotation({...newQuotation, salesPerson: value})}
+                    >
+                      <SelectTrigger className="bg-background border-border">
+                        <SelectValue placeholder="Select sales person" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border border-border">
+                        <SelectItem value="Sarah Johnson">Sarah Johnson</SelectItem>
+                        <SelectItem value="John Martinez">John Martinez</SelectItem>
+                        <SelectItem value="Mike Wilson">Mike Wilson</SelectItem>
+                        <SelectItem value="Lisa Chen">Lisa Chen</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="problemDescription">Problem Description</Label>
+                    <Textarea
+                      id="problemDescription"
+                      value={newQuotation.problemDescription}
+                      onChange={(e) => setNewQuotation({...newQuotation, problemDescription: e.target.value})}
+                      className="bg-background border-border"
+                      rows={3}
+                    />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newQuotation.email}
-                    onChange={(e) => setNewQuotation({...newQuotation, email: e.target.value})}
-                    className="bg-background border-border"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input
-                    id="phone"
-                    value={newQuotation.phone}
-                    onChange={(e) => setNewQuotation({...newQuotation, phone: e.target.value})}
-                    className="bg-background border-border"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    value={newQuotation.address}
-                    onChange={(e) => setNewQuotation({...newQuotation, address: e.target.value})}
-                    className="bg-background border-border"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="salesPerson">Sales Person</Label>
-                  <Select
-                    value={newQuotation.salesPerson}
-                    onValueChange={(value) => setNewQuotation({...newQuotation, salesPerson: value})}
-                  >
-                    <SelectTrigger className="bg-background border-border">
-                      <SelectValue placeholder="Select sales person" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover border border-border">
-                      <SelectItem value="Sarah Johnson">Sarah Johnson</SelectItem>
-                      <SelectItem value="John Martinez">John Martinez</SelectItem>
-                      <SelectItem value="Mike Wilson">Mike Wilson</SelectItem>
-                      <SelectItem value="Lisa Chen">Lisa Chen</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="problemDescription">Problem Description</Label>
-                  <Textarea
-                    id="problemDescription"
-                    value={newQuotation.problemDescription}
-                    onChange={(e) => setNewQuotation({...newQuotation, problemDescription: e.target.value})}
-                    className="bg-background border-border"
-                    rows={3}
-                  />
-                </div>
-              </div>
 
-              <div className="space-y-4">
-                <div>
-                  <Label>Service Pricing</Label>
-                  <div className="mt-2 space-y-3">
-                    <div className="flex justify-between items-center font-medium border-b border-border pb-2">
-                      <span>Service</span>
-                      <div className="flex gap-8">
-                        <span>Price</span>
-                        <span>Include</span>
-                      </div>
-                    </div>
-                    {newQuotation.services.map((service, index) => (
-                      <div key={service.name} className="flex justify-between items-center py-2">
-                        <span className="text-sm">{service.name}</span>
-                        <div className="flex gap-8 items-center">
-                          <span className="text-sm font-medium">${service.price}</span>
-                          <input
-                            type="checkbox"
-                            checked={service.included}
-                            onChange={() => toggleService(index)}
-                            className="w-4 h-4"
-                          />
+                <div className="space-y-4">
+                  <div>
+                    <Label>Service Pricing</Label>
+                    <div className="mt-2 space-y-3">
+                      <div className="flex justify-between items-center font-medium border-b border-border pb-2">
+                        <span>Service</span>
+                        <div className="flex gap-8">
+                          <span>Price</span>
+                          <span>Include</span>
                         </div>
                       </div>
-                    ))}
-                    <div className="border-t border-border pt-2">
-                      <div className="flex justify-between items-center font-semibold">
-                        <span>Total:</span>
-                        <span className="text-green-400">
-                          ${newQuotation.services
-                            .filter(service => service.included)
-                            .reduce((sum, service) => sum + service.price, 0)}
-                        </span>
+                      {newQuotation.services.map((service, index) => (
+                        <div key={service.name} className="flex justify-between items-center py-2">
+                          <span className="text-sm">{service.name}</span>
+                          <div className="flex gap-8 items-center">
+                            <span className="text-sm font-medium">${service.price}</span>
+                            <input
+                              type="checkbox"
+                              checked={service.included}
+                              onChange={() => toggleService(index)}
+                              className="w-4 h-4"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <div className="border-t border-border pt-2">
+                        <div className="flex justify-between items-center font-semibold">
+                          <span>Total:</span>
+                          <span className="text-green-400">
+                            ${newQuotation.services
+                              .filter(service => service.included)
+                              .reduce((sum, service) => sum + service.price, 0)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea
-                    id="notes"
-                    value={newQuotation.notes}
-                    onChange={(e) => setNewQuotation({...newQuotation, notes: e.target.value})}
-                    className="bg-background border-border"
-                    rows={3}
-                    placeholder="Additional notes or terms..."
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="notes">Notes</Label>
+                    <Textarea
+                      id="notes"
+                      value={newQuotation.notes}
+                      onChange={(e) => setNewQuotation({...newQuotation, notes: e.target.value})}
+                      className="bg-background border-border"
+                      rows={3}
+                      placeholder="Additional notes or terms..."
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex justify-end gap-2 pt-4">
-              <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleAddQuotation} className="bg-blue-600 hover:bg-blue-700">
-                Create Quotation
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleAddQuotation} className="bg-blue-600 hover:bg-blue-700">
+                  Create Quotation
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <StatsContainer stats={statsData} />
@@ -353,9 +374,24 @@ export default function Quotations() {
           <Card key={quotation.id} className="p-6 bg-card border border-border/40">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-lg font-semibold">{quotation.customerName}</h3>
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg font-semibold">{quotation.customerName}</h3>
+                  <Badge variant="outline" className="text-xs">
+                    {getVersionDisplay(quotation)}
+                  </Badge>
+                  {quotation.isLatestVersion && (
+                    <Badge variant="outline" className="text-xs bg-green-900/20 text-green-400 border-green-800">
+                      Latest
+                    </Badge>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground">{quotation.customerType} Service</p>
                 <p className="text-sm text-muted-foreground">ID: {quotation.id}</p>
+                {quotation.revisionReason && (
+                  <p className="text-xs text-muted-foreground italic mt-1">
+                    Revision reason: {quotation.revisionReason}
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <Badge 
@@ -426,6 +462,19 @@ export default function Quotations() {
               </div>
               
               <div className="flex gap-2">
+                {quotation.isLatestVersion && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedQuotation(quotation);
+                      setIsRevisionModalOpen(true);
+                    }}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Create Revision
+                  </Button>
+                )}
                 {quotation.status === 'approved' && (
                   <Button
                     size="sm"
@@ -449,9 +498,22 @@ export default function Quotations() {
                 </Button>
               </div>
             </div>
+
+            {/* Version History Component */}
+            <QuotationVersions quotation={quotation} />
           </Card>
         ))}
       </div>
+
+      {/* Revision Modal */}
+      <CreateRevisionModal
+        quotation={selectedQuotation}
+        isOpen={isRevisionModalOpen}
+        onClose={() => {
+          setIsRevisionModalOpen(false);
+          setSelectedQuotation(null);
+        }}
+      />
     </div>
   );
 }
