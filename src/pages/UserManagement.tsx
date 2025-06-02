@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -71,6 +71,7 @@ const mockUsers: User[] = [
 ];
 
 export default function UserManagement() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
@@ -105,6 +106,10 @@ export default function UserManagement() {
       title: "User Added",
       description: "New user has been successfully added to the system.",
     });
+  };
+
+  const handleUserClick = (userId: string) => {
+    navigate(`/users/${userId}`);
   };
 
   const getRoleIcon = (role: string) => {
@@ -271,7 +276,11 @@ export default function UserManagement() {
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
+                <TableRow 
+                  key={user.id} 
+                  className="cursor-pointer hover:bg-accent/50"
+                  onClick={() => handleUserClick(user.id)}
+                >
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>
                     <div className="space-y-1">

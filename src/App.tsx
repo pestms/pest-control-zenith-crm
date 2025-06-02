@@ -1,4 +1,3 @@
-
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { Toaster } from "@/components/ui/toaster";
@@ -13,6 +12,8 @@ import Leads from "./pages/Leads";
 import Quotations from "./pages/Quotations";
 import Analytics from "./pages/Analytics";
 import UserManagement from "./pages/UserManagement";
+import UserDetails from "./pages/UserDetails";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,8 @@ const App = () => (
                     <Route path="/quotations" element={<Quotations />} />
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/users" element={<UserManagement />} />
+                    <Route path="/users/:userId" element={<UserDetails />} />
+                    <Route path="/login" element={<Login />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
