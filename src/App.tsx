@@ -1,3 +1,4 @@
+
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { Toaster } from "@/components/ui/toaster";
@@ -13,6 +14,8 @@ import Quotations from "./pages/Quotations";
 import Analytics from "./pages/Analytics";
 import UserManagement from "./pages/UserManagement";
 import UserDetails from "./pages/UserDetails";
+import AgentProfile from "./pages/AgentProfile";
+import AgentLeads from "./pages/AgentLeads";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -40,6 +43,8 @@ const App = () => (
                     <Route path="/analytics" element={<Analytics />} />
                     <Route path="/users" element={<UserManagement />} />
                     <Route path="/users/:userId" element={<UserDetails />} />
+                    <Route path="/agent/profile" element={<AgentProfile />} />
+                    <Route path="/agent/leads" element={<AgentLeads />} />
                     <Route path="/login" element={<Login />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />

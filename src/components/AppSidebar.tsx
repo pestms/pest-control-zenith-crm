@@ -1,5 +1,5 @@
 
-import { Home, Users, FileText, Settings, BarChart3, UserCheck } from 'lucide-react';
+import { Home, Users, FileText, Settings, BarChart3, UserCheck, LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const menuItems = [
@@ -23,9 +24,29 @@ const menuItems = [
   { title: 'Settings', url: '/settings', icon: Settings },
 ];
 
+const agentMenuItems = [
+  { title: 'Personal Details', url: '/agent/profile', icon: UserCheck },
+  { title: 'My Leads', url: '/agent/leads', icon: Users },
+];
+
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Mock user data - in real app this would come from your auth state
+  const currentUser = {
+    name: 'Sarah Johnson',
+    role: 'admin' // This would be dynamic based on actual user
+  };
+
+  const isAgent = currentUser.role === 'agent';
+  const items = isAgent ? agentMenuItems : menuItems;
+
+  const handleLogout = () => {
+    // In a real app, this would clear auth tokens, etc.
+    console.log('Logging out...');
+    navigate('/login');
+  };
 
   return (
     <Sidebar className="border-r border-border/40">
@@ -48,7 +69,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -67,10 +88,26 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       
-      <SidebarFooter className="p-6">
-        <div className="text-xs text-muted-foreground">
-          Welcome back, Sarah!
+      <SidebarFooter className="p-4 space-y-4">
+        <div className="bg-accent/50 rounded-lg p-3">
+          <div className="text-sm font-semibold text-foreground">
+            Welcome back,
+          </div>
+          <div className="text-lg font-bold text-primary">
+            {currentUser.name}
+          </div>
+          <div className="text-xs text-muted-foreground capitalize">
+            {currentUser.role} Account
+          </div>
         </div>
+        <Button 
+          variant="outline" 
+          className="w-full justify-start gap-2 text-muted-foreground hover:text-destructive hover:border-destructive"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          Sign Out
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
