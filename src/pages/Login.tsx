@@ -22,12 +22,35 @@ export default function Login() {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
+      
+      // Determine user role based on email (for demo purposes)
+      let userRole = 'admin';
+      let userName = 'Sarah Johnson';
+      
+      if (email.includes('agent')) {
+        userRole = 'agent';
+        userName = 'Mike Wilson';
+      }
+      
+      // Store user data in localStorage
+      const userData = {
+        name: userName,
+        role: userRole,
+        email: email
+      };
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+      
       toast({
         title: "Login Successful",
-        description: "Welcome back to PestGuard CRM!",
+        description: `Welcome back to PestGuard CRM, ${userName}!`,
       });
-      // Navigate to dashboard after successful login
-      navigate('/');
+      
+      // Navigate based on role
+      if (userRole === 'agent') {
+        navigate('/agent/profile');
+      } else {
+        navigate('/');
+      }
     }, 1500);
   };
 
