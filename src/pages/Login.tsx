@@ -6,12 +6,14 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Eye, EyeOff, Shield, Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,11 +26,13 @@ export default function Login() {
         title: "Login Successful",
         description: "Welcome back to PestGuard CRM!",
       });
+      // Navigate to dashboard after successful login
+      navigate('/');
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Logo and Header */}
         <div className="text-center space-y-4">
@@ -38,27 +42,27 @@ export default function Login() {
             </div>
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               PestGuard CRM
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600">
               Sign in to your account
             </p>
           </div>
         </div>
 
         {/* Login Form */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
+        <Card className="bg-white shadow-xl border border-gray-200">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl font-semibold text-center">Welcome back</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-2xl font-semibold text-center text-gray-900">Welcome back</CardTitle>
+            <CardDescription className="text-center text-gray-600">
               Enter your credentials to access your dashboard
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                   Email Address
                 </Label>
                 <div className="relative">
@@ -69,14 +73,14 @@ export default function Login() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                    className="pl-10 h-12 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Password
                 </Label>
                 <div className="relative">
@@ -87,14 +91,14 @@ export default function Login() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
+                    className="pl-10 pr-10 h-12 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-1 top-1 h-10 w-10 p-0 hover:bg-transparent"
+                    className="absolute right-1 top-1 h-10 w-10 p-0 hover:bg-gray-100"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -145,6 +149,16 @@ export default function Login() {
                   Contact administrator
                 </Button>
               </p>
+            </div>
+
+            {/* Demo Credentials Info */}
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</h4>
+              <div className="text-xs text-blue-800 space-y-1">
+                <p><strong>Admin:</strong> admin@pestguard.com / password123</p>
+                <p><strong>Agent:</strong> agent@pestguard.com / password123</p>
+                <p className="italic">Note: Any email/password combination will work for demo purposes</p>
+              </div>
             </div>
           </CardContent>
         </Card>
