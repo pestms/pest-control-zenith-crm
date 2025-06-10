@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -77,23 +78,26 @@ const Landing = () => {
     {
       name: "Sarah Johnson",
       company: "GreenShield Pest Control",
-      quote: "Since using PestGuard CRM, our lead conversion rate increased by 35%. The automated follow-ups are a game-changer!",
+      role: "Founder of Ethereal Corporate Network",
+      quote: "Unlike the previous web hosts we've tried, Hostinger's user experience was much less complicated. Its hPanel is easy to use, and the response time is fast. I don't need to train my team members on how to navigate it because everyone can learn it by themselves.",
       rating: 5,
-      gradient: "from-green-500 to-teal-600"
+      avatar: "SJ"
     },
     {
       name: "Mike Rodriguez", 
       company: "Urban Pest Solutions",
-      quote: "The quotation system saves us hours every week. Professional quotes in minutes, not hours.",
+      role: "CEO of Urban Pest Solutions",
+      quote: "The quotation system saves us hours every week. Professional quotes in minutes, not hours. The automation features have transformed our business operations completely.",
       rating: 5,
-      gradient: "from-blue-500 to-purple-600"
+      avatar: "MR"
     },
     {
       name: "Lisa Chen",
       company: "EcoSafe Exterminators", 
-      quote: "Finally, a CRM that understands pest control. Our team productivity has never been higher.",
+      role: "Operations Manager at EcoSafe",
+      quote: "Finally, a CRM that understands pest control. Our team productivity has never been higher. The mobile-first approach is perfect for our field teams.",
       rating: 5,
-      gradient: "from-orange-500 to-red-600"
+      avatar: "LC"
     }
   ];
 
@@ -155,31 +159,31 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <Navigation />
       <HeroSection />
       <StatsSection />
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section className="py-12 md:py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center space-y-4 mb-12 md:mb-16 animate-fade-in">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
               Everything You Need to Manage Leads Effectively
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Our comprehensive platform streamlines your entire lead-to-customer journey
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <Card key={index} className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group ${feature.bgColor} hover-scale animate-fade-in`}>
-                <CardContent className="p-6 space-y-4">
-                  <div className={`bg-gradient-to-r ${feature.gradient} w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="w-6 h-6 text-white" />
+                <CardContent className="p-4 md:p-6 space-y-4">
+                  <div className={`bg-gradient-to-r ${feature.gradient} w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                    <feature.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-900">{feature.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -188,25 +192,25 @@ const Landing = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center space-y-4 mb-12 md:mb-16 animate-fade-in">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
               Drive Real Business Results
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Join hundreds of pest control businesses that have transformed their operations
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className={`flex space-x-4 ${benefit.bgColor} rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale animate-fade-in border-0`}>
-                <div className={`bg-gradient-to-br ${benefit.gradient} w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                  <benefit.icon className="w-8 h-8 text-white" />
+              <div key={index} className={`flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 ${benefit.bgColor} rounded-xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale animate-fade-in border-0`}>
+                <div className={`bg-gradient-to-br ${benefit.gradient} w-12 h-12 md:w-16 md:h-16 rounded-xl flex items-center justify-center flex-shrink-0 mx-auto sm:mx-0`}>
+                  <benefit.icon className="w-6 h-6 md:w-8 md:h-8 text-white" />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-gray-900">{benefit.title}</h3>
-                  <p className="text-gray-600">{benefit.description}</p>
+                <div className="space-y-2 text-center sm:text-left">
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-900">{benefit.title}</h3>
+                  <p className="text-sm md:text-base text-gray-600">{benefit.description}</p>
                   <div className="text-green-600 font-semibold text-sm">{benefit.stat}</div>
                 </div>
               </div>
@@ -216,45 +220,61 @@ const Landing = () => {
       </section>
 
       {/* Testimonials Section with Running Company Logos */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section className="py-12 md:py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center space-y-4 mb-12 md:mb-16 animate-fade-in">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
               Trusted by Pest Control Professionals
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg md:text-xl text-gray-600 px-4">
               See what our customers have to say about their success
             </p>
           </div>
 
           {/* Running Company Logos */}
-          <div className="mb-12 overflow-hidden">
-            <div className="flex animate-[slide_20s_linear_infinite] space-x-8">
+          <div className="mb-8 md:mb-12 overflow-hidden">
+            <div className="flex animate-[slide_20s_linear_infinite] space-x-4 md:space-x-8">
               {[...companyLogos, ...companyLogos].map((logo, index) => (
-                <div key={index} className="flex-shrink-0 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 shadow-md">
-                  <div className="text-gray-700 font-semibold text-sm whitespace-nowrap">{logo}</div>
+                <div key={index} className="flex-shrink-0 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-3 md:p-4 shadow-md">
+                  <div className="text-gray-700 font-semibold text-xs md:text-sm whitespace-nowrap">{logo}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 hover-scale animate-fade-in">
+              <Card key={index} className="border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 bg-white hover-scale animate-fade-in">
                 <CardContent className="p-6 space-y-4">
+                  {/* Header with avatar and info */}
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-gradient-to-r from-purple-500 to-blue-500 w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                      {testimonial.avatar}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 text-base">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600 leading-tight">{testimonial.role}</p>
+                    </div>
+                  </div>
+
+                  {/* Star rating */}
                   <div className="flex space-x-1">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="w-4 h-4 fill-purple-500 text-purple-500" />
                     ))}
                   </div>
-                  <blockquote className="text-gray-600 italic">
+
+                  {/* Quote */}
+                  <blockquote className="text-gray-700 text-sm leading-relaxed">
                     "{testimonial.quote}"
                   </blockquote>
-                  <div className="space-y-1">
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-500">{testimonial.company}</div>
+
+                  {/* Read more link */}
+                  <div>
+                    <a href="#" className="text-purple-500 text-sm font-medium hover:text-purple-600 transition-colors">
+                      Read the full story
+                    </a>
                   </div>
-                  <div className={`h-1 w-full bg-gradient-to-r ${testimonial.gradient} rounded-full`}></div>
                 </CardContent>
               </Card>
             ))}
@@ -263,53 +283,53 @@ const Landing = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center space-y-4 mb-12 md:mb-16 animate-fade-in">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
               Choose Your Perfect Plan
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Select the plan that fits your business needs and start growing today
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
             {pricingPlans.map((plan, index) => (
-              <Card key={index} className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover-scale animate-fade-in relative h-full ${plan.popular ? 'scale-105 z-10' : ''}`}>
+              <Card key={index} className={`border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover-scale animate-fade-in relative h-full ${plan.popular ? 'scale-100 md:scale-105 z-10' : ''}`}>
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  <div className="absolute -top-3 md:-top-4 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-3 md:px-4 py-1 md:py-2 rounded-full text-xs md:text-sm font-medium">
                       Most Popular
                     </div>
                   </div>
                 )}
-                <CardContent className={`p-8 space-y-6 h-full flex flex-col bg-gradient-to-br ${plan.popular ? 'from-green-50 to-blue-50' : 'from-white to-gray-50'}`}>
+                <CardContent className={`p-6 md:p-8 space-y-4 md:space-y-6 h-full flex flex-col bg-gradient-to-br ${plan.popular ? 'from-green-50 to-blue-50' : 'from-white to-gray-50'}`}>
                   <div className="text-center">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                     <div className="space-y-1">
                       <div className="flex items-center justify-center space-x-2">
-                        <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                        <span className="text-3xl md:text-4xl font-bold text-gray-900">{plan.price}</span>
                         {plan.originalPrice && (
-                          <span className="text-lg text-gray-400 line-through">{plan.originalPrice}</span>
+                          <span className="text-base md:text-lg text-gray-400 line-through">{plan.originalPrice}</span>
                         )}
                       </div>
-                      <p className="text-gray-600">{plan.period}</p>
+                      <p className="text-sm md:text-base text-gray-600">{plan.period}</p>
                     </div>
                   </div>
                   
                   <div className={`h-1 w-full bg-gradient-to-r ${plan.gradient} rounded-full`}></div>
                   
-                  <ul className="space-y-3 flex-grow">
+                  <ul className="space-y-2 md:space-y-3 flex-grow">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center space-x-3">
-                        <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                        <span className="text-gray-600">{feature}</span>
+                      <li key={featureIndex} className="flex items-start space-x-3">
+                        <Check className="w-4 h-4 md:w-5 md:h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm md:text-base text-gray-600">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   
-                  <Button className={`w-full bg-gradient-to-r ${plan.gradient} hover:opacity-90 text-white text-lg py-3 mt-auto`}>
+                  <Button className={`w-full bg-gradient-to-r ${plan.gradient} hover:opacity-90 text-white text-base md:text-lg py-2 md:py-3 mt-auto`}>
                     {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
                   </Button>
                 </CardContent>
@@ -320,96 +340,100 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-green-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 animate-fade-in">
-          <div className="space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold text-white">
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
               Start Managing Your Leads Better — Book a Demo Now
             </h2>
-            <p className="text-xl text-green-100">
+            <p className="text-lg md:text-xl text-green-100 px-4">
               Join thousands of pest control businesses that have transformed their lead management
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100 text-lg px-8 py-4 hover-scale">
+              <Button size="lg" className="bg-white text-green-600 hover:bg-gray-100 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 hover-scale">
                 Book a Demo
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 text-lg px-8 py-4">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-green-600 text-base md:text-lg px-6 md:px-8 py-3 md:py-4">
                 Start Free Trial
               </Button>
             </div>
-            <div className="flex items-center justify-center space-x-4 pt-4">
-              <Phone className="w-5 h-5 text-white" />
-              <span className="text-white">Call us: (555) 123-PEST</span>
-              <Calendar className="w-5 h-5 text-white ml-6" />
-              <span className="text-white">Available 24/7</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-4 pt-4 text-sm md:text-base">
+              <div className="flex items-center space-x-2">
+                <Phone className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                <span className="text-white">Call us: (555) 123-PEST</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                <span className="text-white">Available 24/7</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            <div className="space-y-4 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start space-x-2">
                 <div className="bg-gradient-to-r from-green-500 to-blue-500 p-2 rounded-lg">
-                  <Shield className="w-6 h-6 text-white" />
+                  <Shield className="w-5 h-5 md:w-6 md:h-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">PestGuard CRM</span>
+                <span className="text-lg md:text-xl font-bold">PestGuard CRM</span>
               </div>
-              <p className="text-gray-400">
+              <p className="text-sm md:text-base text-gray-400">
                 The leading CRM platform designed specifically for pest control businesses.
               </p>
-              <div className="flex space-x-4">
+              <div className="flex justify-center md:justify-start space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Facebook className="w-5 h-5" />
+                  <Facebook className="w-4 h-4 md:w-5 md:h-5" />
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Twitter className="w-5 h-5" />
+                  <Twitter className="w-4 h-4 md:w-5 md:h-5" />
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Linkedin className="w-5 h-5" />
+                  <Linkedin className="w-4 h-4 md:w-5 md:h-5" />
                 </a>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Instagram className="w-5 h-5" />
+                  <Instagram className="w-4 h-4 md:w-5 md:h-5" />
                 </a>
               </div>
             </div>
-            <div className="space-y-4">
-              <h4 className="font-semibold">Product</h4>
-              <ul className="space-y-2 text-gray-400">
+            <div className="space-y-4 text-center md:text-left">
+              <h4 className="font-semibold text-base md:text-lg">Product</h4>
+              <ul className="space-y-2 text-sm md:text-base text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Integrations</a></li>
               </ul>
             </div>
-            <div className="space-y-4">
-              <h4 className="font-semibold">Support</h4>
-              <ul className="space-y-2 text-gray-400">
+            <div className="space-y-4 text-center md:text-left">
+              <h4 className="font-semibold text-base md:text-lg">Support</h4>
+              <ul className="space-y-2 text-sm md:text-base text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Live Chat</a></li>
               </ul>
             </div>
-            <div className="space-y-4">
-              <h4 className="font-semibold">Legal</h4>
-              <ul className="space-y-2 text-gray-400">
+            <div className="space-y-4 text-center md:text-left">
+              <h4 className="font-semibold text-base md:text-lg">Legal</h4>
+              <ul className="space-y-2 text-sm md:text-base text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-sm md:text-base text-gray-400">
             <p>&copy; 2024 PestGuard CRM. All rights reserved.</p>
           </div>
         </div>
       </footer>
 
       {/* Mobile Sticky CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 md:hidden z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 md:hidden z-50">
         <Button className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white" size="lg">
           Start Free Trial
         </Button>
@@ -431,7 +455,13 @@ const Landing = () => {
         }
         
         .hover-scale:hover {
-          transform: scale(1.05);
+          transform: scale(1.02);
+        }
+        
+        @media (min-width: 768px) {
+          .hover-scale:hover {
+            transform: scale(1.05);
+          }
         }
         
         @keyframes fadeIn {
