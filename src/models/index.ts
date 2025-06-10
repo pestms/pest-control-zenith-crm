@@ -1,11 +1,11 @@
 
 // Export all models for easy importing
-export { User } from '../../backend/models/User';
-export { Lead } from '../../backend/models/Lead';
-export { Service } from '../../backend/models/Service';
+export { User } from './User';
+export { Lead } from './Lead';
+export { Service } from './Service';
 export { Quotation } from './Quotation';
-export { Contract } from '../../backend/models/Contract';
-export { LeadActivity } from '../../backend/models/LeadActivity';
+export { Contract } from './Contract';
+export { LeadActivity } from './LeadActivity';
 
 // Export types
-export * from '../../backend/types/database';
+export * from '../types/database';
