@@ -96,17 +96,17 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
+      <DialogContent className="mx-4 w-[calc(100vw-2rem)] max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <Edit className="w-6 h-6" />
-            Create Revision - {quotation.customerName}
+          <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2">
+            <Edit className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="truncate">Create Revision - {quotation.customerName}</span>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Revision Reason */}
-          <Card className="p-4">
+          <Card className="p-3 sm:p-4">
             <div className="space-y-2">
               <Label htmlFor="revisionReason">Reason for Revision *</Label>
               <Textarea
@@ -120,10 +120,10 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
           </Card>
 
           {/* Services */}
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Services & Pricing</h3>
-              <Button onClick={addService} size="sm" variant="outline">
+          <Card className="p-3 sm:p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold">Services & Pricing</h3>
+              <Button onClick={addService} size="sm" variant="outline" className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Service
               </Button>
@@ -131,25 +131,39 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
             
             <div className="space-y-4">
               {services.map((service, index) => (
-                <div key={index} className="border border-border rounded-lg p-4">
-                  <div className="grid grid-cols-4 gap-4 items-end">
-                    <div>
-                      <Label className="text-sm font-medium">Service Name</Label>
-                      <Input
-                        value={service.name}
-                        onChange={(e) => updateService(index, 'name', e.target.value)}
-                        placeholder="Enter service name"
-                      />
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium">Price ($)</Label>
-                      <Input
-                        type="number"
-                        value={service.price}
-                        onChange={(e) => updateService(index, 'price', Number(e.target.value))}
-                        min="0"
-                        step="0.01"
-                      />
+                <div key={index} className="border border-border rounded-lg p-3 sm:p-4">
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0 mr-2">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Service Name</Label>
+                            <Input
+                              value={service.name}
+                              onChange={(e) => updateService(index, 'name', e.target.value)}
+                              placeholder="Enter service name"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Price ($)</Label>
+                            <Input
+                              type="number"
+                              value={service.price}
+                              onChange={(e) => updateService(index, 'price', Number(e.target.value))}
+                              min="0"
+                              step="0.01"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeService(index)}
+                        className="text-red-500 hover:text-red-700 flex-shrink-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
                     <div className="flex items-center space-x-2">
                       <input
@@ -160,14 +174,6 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
                       />
                       <Label className="text-sm">Include in quotation</Label>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeService(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
                   </div>
                 </div>
               ))}
@@ -183,10 +189,10 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
           </Card>
 
           {/* Additional Details */}
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Additional Details</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+          <Card className="p-3 sm:p-4">
+            <h3 className="text-base sm:text-lg font-semibold mb-4">Additional Details</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Valid Until</Label>
                 <Input
                   type="date"
@@ -194,8 +200,7 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
                   onChange={(e) => setValidUntil(e.target.value)}
                 />
               </div>
-              <div></div>
-              <div className="col-span-2">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Notes</Label>
                 <Textarea
                   value={notes}
@@ -208,11 +213,11 @@ export function CreateRevisionModal({ quotation, isOpen, onClose }: CreateRevisi
           </Card>
         </div>
 
-        <div className="flex justify-end gap-4 pt-4 border-t border-border">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex flex-col gap-2 pt-4 border-t border-border sm:flex-row sm:justify-end sm:gap-4">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
             Cancel
           </Button>
-          <Button onClick={handleCreateRevision} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleCreateRevision} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
             <Edit className="w-4 h-4 mr-2" />
             Create Revision
           </Button>

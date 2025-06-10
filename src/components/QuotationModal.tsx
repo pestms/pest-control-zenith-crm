@@ -90,40 +90,40 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
+      <DialogContent className="mx-2 w-[calc(100vw-1rem)] max-w-4xl max-h-[90vh] overflow-y-auto bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <Calculator className="w-6 h-6" />
-            Create Quotation - {lead.customerName}
+          <DialogTitle className="text-lg sm:text-2xl font-bold flex items-center gap-2">
+            <Calculator className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="truncate">Create Quotation - {lead.customerName}</span>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Customer Information */}
-          <Card className="p-4 bg-accent/30">
-            <h3 className="text-lg font-semibold mb-3">Customer Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+          <Card className="p-3 sm:p-4 bg-accent/30">
+            <h3 className="text-base sm:text-lg font-semibold mb-3">Customer Information</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Customer Name</Label>
                 <Input value={lead.customerName} readOnly className="bg-muted" />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Customer Type</Label>
                 <Input value={lead.customerType} readOnly className="bg-muted" />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Email</Label>
                 <Input value={lead.email} readOnly className="bg-muted" />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Phone</Label>
                 <Input value={lead.phone} readOnly className="bg-muted" />
               </div>
-              <div className="col-span-2">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Address</Label>
                 <Input value={lead.address} readOnly className="bg-muted" />
               </div>
-              <div className="col-span-2">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Problem Description</Label>
                 <Textarea value={lead.problemDescription} readOnly className="bg-muted" />
               </div>
@@ -131,10 +131,10 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
           </Card>
 
           {/* Services */}
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Services & Pricing</h3>
-              <Button onClick={addService} size="sm" variant="outline">
+          <Card className="p-3 sm:p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold">Services & Pricing</h3>
+              <Button onClick={addService} size="sm" variant="outline" className="w-full sm:w-auto">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Service
               </Button>
@@ -142,37 +142,39 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
             
             <div className="space-y-4">
               {services.map((service) => (
-                <div key={service.id} className="border border-border rounded-lg p-4">
+                <div key={service.id} className="border border-border rounded-lg p-3 sm:p-4">
                   <div className="flex items-start justify-between mb-3">
-                    <div className="grid grid-cols-2 gap-4 flex-1">
-                      <div>
-                        <Label className="text-sm font-medium">Service Name</Label>
-                        <Input
-                          value={service.name}
-                          onChange={(e) => updateService(service.id, 'name', e.target.value)}
-                          placeholder="Enter service name"
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium">Description</Label>
-                        <Input
-                          value={service.description}
-                          onChange={(e) => updateService(service.id, 'description', e.target.value)}
-                          placeholder="Enter description"
-                        />
+                    <div className="flex-1 min-w-0 mr-2">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Service Name</Label>
+                          <Input
+                            value={service.name}
+                            onChange={(e) => updateService(service.id, 'name', e.target.value)}
+                            placeholder="Enter service name"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Description</Label>
+                          <Input
+                            value={service.description}
+                            onChange={(e) => updateService(service.id, 'description', e.target.value)}
+                            placeholder="Enter description"
+                          />
+                        </div>
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => removeService(service.id)}
-                      className="ml-2 text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 flex-shrink-0"
                     >
                       <X className="w-4 h-4" />
                     </Button>
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
                       <Label className="text-sm font-medium">Quantity</Label>
                       <Input
                         type="number"
@@ -181,7 +183,7 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
                         min="1"
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label className="text-sm font-medium">Unit Price ($)</Label>
                       <Input
                         type="number"
@@ -191,7 +193,7 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
                         step="0.01"
                       />
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <Label className="text-sm font-medium">Total</Label>
                       <Input
                         value={`$${service.total.toFixed(2)}`}
@@ -206,7 +208,7 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
 
             {/* Totals */}
             <div className="mt-6 border-t border-border pt-4">
-              <div className="space-y-2 max-w-sm ml-auto">
+              <div className="space-y-2 w-full sm:max-w-sm sm:ml-auto">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
                   <span>${subtotal.toFixed(2)}</span>
@@ -224,10 +226,10 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
           </Card>
 
           {/* Additional Details */}
-          <Card className="p-4">
-            <h3 className="text-lg font-semibold mb-4">Additional Details</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+          <Card className="p-3 sm:p-4">
+            <h3 className="text-base sm:text-lg font-semibold mb-4">Additional Details</h3>
+            <div className="space-y-4">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Valid Until</Label>
                 <Input
                   type="date"
@@ -235,11 +237,11 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
                   onChange={(e) => setValidUntil(e.target.value)}
                 />
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Payment Terms</Label>
                 <Input placeholder="e.g., Net 30 days" />
               </div>
-              <div className="col-span-2">
+              <div className="space-y-2">
                 <Label className="text-sm font-medium">Notes</Label>
                 <Textarea
                   value={quotationNotes}
@@ -252,11 +254,11 @@ export function QuotationModal({ lead, isOpen, onClose }: QuotationModalProps) {
           </Card>
         </div>
 
-        <div className="flex justify-end gap-4 pt-4 border-t border-border">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex flex-col gap-2 pt-4 border-t border-border sm:flex-row sm:justify-end sm:gap-4">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
             Cancel
           </Button>
-          <Button onClick={handleConvertToQuotation} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleConvertToQuotation} className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
             <DollarSign className="w-4 h-4 mr-2" />
             Convert to Quotation
           </Button>

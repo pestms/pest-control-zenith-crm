@@ -9,9 +9,11 @@ import {
   addLead,
   Lead 
 } from '@/store/slices/leadsSlice';
+import { addActivity } from '@/store/slices/leadActivitiesSlice';
 import { LeadsTable } from '@/components/LeadsTable';
 import { LeadDetailsModal } from '@/components/LeadDetailsModal';
 import { QuotationModal } from '@/components/QuotationModal';
+import { LeadActivityModal } from '@/components/LeadActivityModal';
 import { StatsContainer } from '@/components/StatsContainer';
 import { useLeadStats } from '@/hooks/useLeadStats';
 import { Button } from '@/components/ui/button';
@@ -37,7 +39,9 @@ export default function Leads() {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isQuotationModalOpen, setIsQuotationModalOpen] = useState(false);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  
   const [newLead, setNewLead] = useState({
     customerName: '',
     customerType: 'Residential' as 'Residential' | 'Commercial',
@@ -61,6 +65,15 @@ export default function Leads() {
   const handleCreateQuotation = (lead: Lead) => {
     setSelectedLead(lead);
     setIsQuotationModalOpen(true);
+  };
+
+  const handleAddActivity = (lead: Lead) => {
+    setSelectedLead(lead);
+    setIsActivityModalOpen(true);
+  };
+
+  const handleActivityAdded = (activity: any) => {
+    dispatch(addActivity(activity));
   };
 
   const handleAddLead = () => {
@@ -140,24 +153,24 @@ export default function Leads() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Pest Control Leads</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Pest Control Leads</h1>
           <p className="text-muted-foreground">({filteredLeads.length})</p>
         </div>
         <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Add Lead
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl bg-card border border-border">
+          <DialogContent className="max-w-2xl bg-card border border-border mx-4">
             <DialogHeader>
               <DialogTitle>Add New Lead</DialogTitle>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="customerName">Customer Name *</Label>
                 <Input
@@ -203,7 +216,7 @@ export default function Leads() {
                   className="bg-background border-border"
                 />
               </div>
-              <div className="space-y-2 col-span-2">
+              <div className="space-y-2 col-span-1 sm:col-span-2">
                 <Label htmlFor="address">Address</Label>
                 <Input
                   id="address"
@@ -240,7 +253,7 @@ export default function Leads() {
                   className="bg-background border-border"
                 />
               </div>
-              <div className="space-y-2 col-span-2">
+              <div className="space-y-2 col-span-1 sm:col-span-2">
                 <Label htmlFor="problemDescription">Problem Description</Label>
                 <Textarea
                   id="problemDescription"
@@ -265,8 +278,8 @@ export default function Leads() {
 
       <StatsContainer stats={statsData} />
 
-      <div className="flex gap-4 items-center">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+        <div className="relative flex-1 max-w-full sm:max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder="Search leads..."
@@ -276,47 +289,52 @@ export default function Leads() {
           />
         </div>
         
-        <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value))}>
-          <SelectTrigger className="w-40 bg-background border-border">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="bg-popover border border-border">
-            <SelectItem value="All">Status: All</SelectItem>
-            <SelectItem value="Lead">Lead</SelectItem>
-            <SelectItem value="Quote">Quote</SelectItem>
-            <SelectItem value="Contract">Contract</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <Select value={statusFilter} onValueChange={(value) => dispatch(setStatusFilter(value))}>
+            <SelectTrigger className="w-full sm:w-40 bg-background border-border">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-popover border border-border">
+              <SelectItem value="All">Status: All</SelectItem>
+              <SelectItem value="Lead">Lead</SelectItem>
+              <SelectItem value="Quote">Quote</SelectItem>
+              <SelectItem value="Contract">Contract</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select value={priorityFilter} onValueChange={(value) => dispatch(setPriorityFilter(value))}>
-          <SelectTrigger className="w-40 bg-background border-border">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className="bg-popover border border-border">
-            <SelectItem value="All">Priority: All</SelectItem>
-            <SelectItem value="High">High</SelectItem>
-            <SelectItem value="Medium">Medium</SelectItem>
-            <SelectItem value="Low">Low</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={priorityFilter} onValueChange={(value) => dispatch(setPriorityFilter(value))}>
+            <SelectTrigger className="w-full sm:w-40 bg-background border-border">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-popover border border-border">
+              <SelectItem value="All">Priority: All</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select onValueChange={(value) => dispatch(setSortBy(value))}>
-          <SelectTrigger className="w-32 bg-background border-border">
-            <SelectValue placeholder="Sort" />
-          </SelectTrigger>
-          <SelectContent className="bg-popover border border-border">
-            <SelectItem value="createdAt">Date</SelectItem>
-            <SelectItem value="value">Value</SelectItem>
-            <SelectItem value="priority">Priority</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select onValueChange={(value) => dispatch(setSortBy(value))}>
+            <SelectTrigger className="w-full sm:w-32 bg-background border-border">
+              <SelectValue placeholder="Sort" />
+            </SelectTrigger>
+            <SelectContent className="bg-popover border border-border">
+              <SelectItem value="createdAt">Date</SelectItem>
+              <SelectItem value="value">Value</SelectItem>
+              <SelectItem value="priority">Priority</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <LeadsTable 
-        onViewDetails={handleViewDetails} 
-        onCreateQuotation={handleCreateQuotation}
-      />
+      <div className="overflow-x-auto">
+        <LeadsTable 
+          onViewDetails={handleViewDetails} 
+          onCreateQuotation={handleCreateQuotation}
+          onAddActivity={handleAddActivity}
+        />
+      </div>
 
       <LeadDetailsModal
         lead={selectedLead}
@@ -328,6 +346,15 @@ export default function Leads() {
         lead={selectedLead}
         isOpen={isQuotationModalOpen}
         onClose={() => setIsQuotationModalOpen(false)}
+      />
+
+      <LeadActivityModal
+        isOpen={isActivityModalOpen}
+        onClose={() => setIsActivityModalOpen(false)}
+        leadId={selectedLead?.id || ''}
+        leadName={selectedLead?.customerName || ''}
+        type="lead"
+        onActivityAdded={handleActivityAdded}
       />
     </div>
   );

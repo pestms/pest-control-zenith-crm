@@ -1,16 +1,21 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Eye, EyeOff, Shield, Mail, Lock } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Eye, EyeOff, Shield, Mail, Lock } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,34 +27,39 @@ export default function Login() {
     // Simulate login process
     setTimeout(() => {
       setIsLoading(false);
-      
+
       // Determine user role based on email (for demo purposes)
-      let userRole = 'admin';
-      let userName = 'Sarah Johnson';
-      
-      if (email.includes('agent')) {
-        userRole = 'agent';
-        userName = 'Mike Wilson';
+      let userRole = "admin";
+      let userName = "Sarah Johnson";
+
+      if (email.includes("agent")) {
+        userRole = "agent";
+        userName = "Mike Wilson";
+      } else if (email.includes("sales")) {
+        userRole = "sales";
+        userName = "Alex Thompson";
       }
-      
+
       // Store user data in localStorage
       const userData = {
         name: userName,
         role: userRole,
-        email: email
+        email: email,
       };
-      localStorage.setItem('currentUser', JSON.stringify(userData));
-      
+      localStorage.setItem("currentUser", JSON.stringify(userData));
+
       toast({
         title: "Login Successful",
         description: `Welcome back to PestGuard CRM, ${userName}!`,
       });
-      
+
       // Navigate based on role
-      if (userRole === 'agent') {
-        navigate('/agent/profile');
+      if (userRole === "agent") {
+        navigate("/agent/profile");
+      } else if (userRole === "sales") {
+        navigate("/sales/profile");
       } else {
-        navigate('/');
+        navigate("/dashboard");
       }
     }, 1500);
   };
@@ -68,16 +78,16 @@ export default function Login() {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               PestGuard CRM
             </h1>
-            <p className="text-gray-600">
-              Sign in to your account
-            </p>
+            <p className="text-gray-600">Sign in to your account</p>
           </div>
         </div>
 
         {/* Login Form */}
         <Card className="bg-white shadow-xl border border-gray-200">
           <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl font-semibold text-center text-gray-900">Welcome back</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-center text-gray-900">
+              Welcome back
+            </CardTitle>
             <CardDescription className="text-center text-gray-600">
               Enter your credentials to access your dashboard
             </CardDescription>
@@ -85,7 +95,10 @@ export default function Login() {
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Email Address
                 </Label>
                 <div className="relative">
@@ -103,14 +116,17 @@ export default function Login() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <Label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Password
                 </Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -144,7 +160,10 @@ export default function Login() {
                     Remember me
                   </Label>
                 </div>
-                <Button variant="link" className="p-0 h-auto text-sm text-blue-600 hover:text-blue-500">
+                <Button
+                  variant="link"
+                  className="p-0 h-auto text-sm text-blue-600 hover:text-blue-500"
+                >
                   Forgot password?
                 </Button>
               </div>
@@ -160,15 +179,18 @@ export default function Login() {
                     <span>Signing in...</span>
                   </div>
                 ) : (
-                  'Sign in'
+                  "Sign in"
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
-                <Button variant="link" className="p-0 h-auto text-blue-600 hover:text-blue-500">
+                Don't have an account?{" "}
+                <Button
+                  variant="link"
+                  className="p-0 h-auto text-blue-600 hover:text-blue-500"
+                >
                   Contact administrator
                 </Button>
               </p>
@@ -176,11 +198,23 @@ export default function Login() {
 
             {/* Demo Credentials Info */}
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</h4>
+              <h4 className="text-sm font-semibold text-blue-900 mb-2">
+                Demo Credentials:
+              </h4>
               <div className="text-xs text-blue-800 space-y-1">
-                <p><strong>Admin:</strong> admin@pestguard.com / password123</p>
-                <p><strong>Agent:</strong> agent@pestguard.com / password123</p>
-                <p className="italic">Note: Any email/password combination will work for demo purposes</p>
+                <p>
+                  <strong>Admin:</strong> admin@pestguard.com / password123
+                </p>
+                <p>
+                  <strong>Agent:</strong> agent@pestguard.com / password123
+                </p>
+                <p>
+                  <strong>Sales:</strong> sales@pestguard.com / password123
+                </p>
+                <p className="italic">
+                  Note: Any email/password combination will work for demo
+                  purposes
+                </p>
               </div>
             </div>
           </CardContent>

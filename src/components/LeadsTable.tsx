@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { convertToQuotation, updateLead } from '@/store/slices/leadsSlice';
@@ -22,16 +21,27 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Lead } from '@/store/slices/leadsSlice';
-import { Eye, FileText, Phone, Mail, MapPin, Building, Home, User } from 'lucide-react';
+import { LeadActivities } from '@/components/LeadActivities';
+import { Eye, FileText, Phone, Mail, MapPin, Building, Home, User, Plus } from 'lucide-react';
 
 interface LeadsTableProps {
   onViewDetails: (lead: Lead) => void;
   onCreateQuotation: (lead: Lead) => void;
+  onAddActivity?: (lead: Lead) => void;
 }
 
-export function LeadsTable({ onViewDetails, onCreateQuotation }: LeadsTableProps) {
+export function LeadsTable({ onViewDetails, onCreateQuotation, onAddActivity }: LeadsTableProps) {
   const dispatch = useDispatch();
   const { filteredLeads } = useSelector((state: RootState) => state.leads);
+  const { activities } = useSelector((state: RootState) => state.leadActivities);
+  const [openActivities, setOpenActivities] = useState<{[key: string]: boolean}>({});
+
+  const toggleActivities = (leadId: string) => {
+    setOpenActivities(prev => ({
+      ...prev,
+      [leadId]: !prev[leadId]
+    }));
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -57,113 +67,141 @@ export function LeadsTable({ onViewDetails, onCreateQuotation }: LeadsTableProps
 
   return (
     <Card className="bg-card border border-border/40">
-      <Table>
-        <TableHeader>
-          <TableRow className="border-b border-border/40">
-            <TableHead className="text-left p-4 font-semibold text-sm">Customer</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Service Details</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Contact</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Lead By</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Assigned To</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Status</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Value</TableHead>
-            <TableHead className="text-left p-4 font-semibold text-sm">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredLeads.map((lead) => (
-            <TableRow key={lead.id} className="border-b border-border/20 hover:bg-accent/50">
-              <TableCell className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
-                    {getCustomerIcon(lead.customerType)}
-                  </div>
-                  <div className="space-y-1">
-                    <div className="font-medium">{lead.customerName}</div>
-                    <div className="text-sm text-muted-foreground flex items-center gap-1">
-                      {getCustomerIcon(lead.customerType)}
-                      {lead.customerType}
-                    </div>
-                    <Badge 
-                      variant="outline" 
-                      className={`text-xs ${getPriorityColor(lead.priority)}`}
-                    >
-                      {lead.priority} priority
-                    </Badge>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="space-y-1">
-                  <div className="font-medium text-sm">{lead.serviceDetails}</div>
-                  <div className="text-sm text-muted-foreground flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {lead.address}
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="space-y-1">
-                  <div className="text-sm flex items-center gap-1">
-                    <Phone className="w-3 h-3" />
-                    {lead.phone}
-                  </div>
-                  <div className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Mail className="w-3 h-3" />
-                    {lead.email}
-                  </div>
-                  <div className="text-xs text-muted-foreground">{lead.lastContact}</div>
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="text-sm text-muted-foreground flex items-center gap-1">
-                  <User className="w-3 h-3" />
-                  Website Form
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="text-sm flex items-center gap-1">
-                  <User className="w-3 h-3" />
-                  {lead.salesPerson || 'Unassigned'}
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <Badge 
-                  variant="outline" 
-                  className={getStatusColor(lead.status)}
-                >
-                  {lead.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="font-semibold text-green-600">
-                  ${lead.estimatedValue.toLocaleString()}
-                </div>
-              </TableCell>
-              <TableCell className="p-4">
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onViewDetails(lead)}
-                    className="p-2"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onCreateQuotation(lead)}
-                    className="p-2"
-                  >
-                    <FileText className="w-4 h-4" />
-                  </Button>
-                </div>
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-b border-border/40">
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[200px]">Customer</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[250px]">Service Details</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[200px]">Contact</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[120px]">Lead By</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[120px]">Assigned To</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[100px]">Status</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[100px]">Value</TableHead>
+              <TableHead className="text-left p-4 font-semibold text-sm min-w-[150px]">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredLeads.map((lead) => {
+              const leadActivities = activities.filter(activity => activity.leadId === lead.id);
+              return (
+                <React.Fragment key={lead.id}>
+                  <TableRow className="border-b border-border/20 hover:bg-accent/50">
+                    <TableCell className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full flex-shrink-0">
+                          {getCustomerIcon(lead.customerType)}
+                        </div>
+                        <div className="space-y-1 min-w-0">
+                          <div className="font-medium truncate">{lead.customerName}</div>
+                          <div className="text-sm text-muted-foreground flex items-center gap-1">
+                            {getCustomerIcon(lead.customerType)}
+                            <span className="truncate">{lead.customerType}</span>
+                          </div>
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs ${getPriorityColor(lead.priority)}`}
+                          >
+                            {lead.priority} priority
+                          </Badge>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="space-y-1">
+                        <div className="font-medium text-sm line-clamp-2">{lead.serviceDetails}</div>
+                        <div className="text-sm text-muted-foreground flex items-start gap-1">
+                          <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                          <span className="line-clamp-2">{lead.address}</span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="space-y-1">
+                        <div className="text-sm flex items-center gap-1">
+                          <Phone className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{lead.phone}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Mail className="w-3 h-3 flex-shrink-0" />
+                          <span className="truncate">{lead.email}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">{lead.lastContact}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="text-sm text-muted-foreground flex items-center gap-1">
+                        <User className="w-3 h-3" />
+                        <span className="truncate">Website Form</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="text-sm flex items-center gap-1">
+                        <User className="w-3 h-3" />
+                        <span className="truncate">{lead.salesPerson || 'Unassigned'}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <Badge 
+                        variant="outline" 
+                        className={getStatusColor(lead.status)}
+                      >
+                        {lead.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="font-semibold text-green-600">
+                        ${lead.estimatedValue.toLocaleString()}
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">
+                      <div className="flex flex-wrap gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onViewDetails(lead)}
+                          className="p-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onCreateQuotation(lead)}
+                          className="p-2"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </Button>
+                        {onAddActivity && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onAddActivity(lead)}
+                            className="p-2"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  {leadActivities.length > 0 && (
+                    <TableRow>
+                      <TableCell colSpan={8} className="p-2 bg-accent/20">
+                        <LeadActivities
+                          activities={leadActivities}
+                          isOpen={openActivities[lead.id] || false}
+                          onToggle={() => toggleActivities(lead.id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </Card>
   );
 }
