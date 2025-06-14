@@ -1,15 +1,9 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Eye, EyeOff, Shield, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -65,72 +59,70 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="w-full max-w-md space-y-8">
-        {/* Logo and Header */}
-        <div className="text-center space-y-4">
-          <div className="flex justify-center">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Left Side - Login Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          {/* Header */}
+          <div className="text-left">
+            <div className="flex items-center space-x-2 mb-8">
+              <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-sm"></div>
+              </div>
             </div>
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              PestGuard CRM
-            </h1>
-            <p className="text-gray-600">Sign in to your account</p>
-          </div>
-        </div>
+            <div className="mb-6">
+              <p className="text-gray-600 text-sm mb-2">Don't have an account? <span className="text-blue-600 cursor-pointer hover:underline">Register</span></p>
+            </div>
+            
+            {/* User Avatar */}
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                <User className="w-8 h-8 text-gray-400" />
+              </div>
+            </div>
 
-        {/* Login Form */}
-        <Card className="bg-white shadow-xl border border-gray-200">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-2xl font-semibold text-center text-gray-900">
-              Welcome back
-            </CardTitle>
-            <CardDescription className="text-center text-gray-600">
-              Enter your credentials to access your dashboard
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Email Address
+            <h1 className="text-2xl font-semibold text-gray-900 text-center mb-2">
+              Login to your account
+            </h1>
+            <p className="text-gray-600 text-center text-sm">
+              Enter your details to login.
+            </p>
+          </div>
+
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                  Email Address <span className="text-red-500">*</span>
                 </Label>
-                <div className="relative">
+                <div className="mt-1 relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="hello@mimicdesign.co"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 h-12 bg-white border-gray-300 text-gray-900 placeholder-gray-400"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Password
+              <div>
+                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                  Password <span className="text-red-500">*</span>
                 </Label>
-                <div className="relative">
+                <div className="mt-1 relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="• • • • • • • • •"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-10 h-12 bg-white border-gray-300 text-gray-900"
                     required
                   />
                   <Button
@@ -148,81 +140,103 @@ export default function Login() {
                   </Button>
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="remember"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Remember me
-                  </Label>
-                </div>
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-sm text-blue-600 hover:text-blue-500"
-                >
-                  Forgot password?
-                </Button>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <Label htmlFor="remember" className="text-sm text-gray-600">
+                  Keep me logged in
+                </Label>
               </div>
-
               <Button
-                type="submit"
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
-                disabled={isLoading}
+                variant="link"
+                className="p-0 h-auto text-sm text-gray-600 hover:text-gray-500 underline"
               >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Signing in...</span>
-                  </div>
-                ) : (
-                  "Sign in"
-                )}
+                Forgot password?
               </Button>
-            </form>
+            </div>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-blue-600 hover:text-blue-500"
-                >
-                  Contact administrator
-                </Button>
+            <Button
+              type="submit"
+              className="w-full h-12 bg-black hover:bg-gray-800 text-white font-medium transition-colors rounded-md"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </form>
+
+          {/* Demo Credentials Info */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 className="text-sm font-semibold text-blue-900 mb-2">
+              Demo Credentials:
+            </h4>
+            <div className="text-xs text-blue-800 space-y-1">
+              <p>
+                <strong>Admin:</strong> admin@pestguard.com / password123
+              </p>
+              <p>
+                <strong>Agent:</strong> agent@pestguard.com / password123
+              </p>
+              <p>
+                <strong>Sales:</strong> sales@pestguard.com / password123
+              </p>
+              <p className="italic">
+                Note: Any email/password combination will work for demo purposes
               </p>
             </div>
+          </div>
 
-            {/* Demo Credentials Info */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="text-sm font-semibold text-blue-900 mb-2">
-                Demo Credentials:
-              </h4>
-              <div className="text-xs text-blue-800 space-y-1">
-                <p>
-                  <strong>Admin:</strong> admin@pestguard.com / password123
-                </p>
-                <p>
-                  <strong>Agent:</strong> agent@pestguard.com / password123
-                </p>
-                <p>
-                  <strong>Sales:</strong> sales@pestguard.com / password123
-                </p>
-                <p className="italic">
-                  Note: Any email/password combination will work for demo
-                  purposes
-                </p>
-              </div>
+          {/* Footer */}
+          <div className="text-center">
+            <p className="text-sm text-gray-500 flex items-center justify-center space-x-2">
+              <span>© 2025 PestGuard CRM</span>
+              <select className="bg-transparent text-sm text-gray-500 border-none outline-none">
+                <option>ENG</option>
+              </select>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Testimonial */}
+      <div className="hidden lg:flex lg:flex-1 bg-gray-100 items-center justify-center p-12">
+        <div className="max-w-md text-center space-y-6">
+          {/* User Avatar */}
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center">
+              <span className="text-2xl">🐛</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Footer */}
-        <div className="text-center text-sm text-gray-500">
-          <p>© 2024 PestGuard CRM. All rights reserved.</p>
+          {/* Testimonial Text */}
+          <blockquote className="text-xl text-gray-800 leading-relaxed">
+            "The Pest Control Management app has revolutionized our operations. It's efficient and user-friendly, streamlining everything from lead generation to quotation tracking."
+          </blockquote>
+
+          {/* Author */}
+          <div className="space-y-1">
+            <p className="font-semibold text-gray-900">Marcus Rodriguez</p>
+            <p className="text-gray-600 text-sm">CEO / PestControl Pro</p>
+          </div>
+
+          {/* Rating */}
+          <div className="flex justify-center space-x-1">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="w-2 h-2 bg-black rounded-full"></div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
