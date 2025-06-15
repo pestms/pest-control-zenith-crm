@@ -31,6 +31,10 @@ model User {
   contracts     Contract[]
   leadActivities LeadActivity[]
 
+  // Indexes for performance
+  @@index([role])
+  @@index([isActive])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -61,6 +65,13 @@ model Lead {
   contracts     Contract[]
   activities    LeadActivity[]
 
+  // Indexes for performance
+  @@index([status])
+  @@index([priority])
+  @@index([leadSource])
+  @@index([salesPersonId])
+  @@index([createdAt])
+  @@index([customerType])
   @@map("leads")
 }
 
@@ -78,6 +89,9 @@ model Service {
   leadServices      LeadService[]
   quotationServices QuotationService[]
 
+  // Indexes for performance
+  @@index([isActive])
+  @@index([category])
   @@map("services")
 }
 
@@ -136,6 +150,13 @@ model Quotation {
   services             QuotationService[]
   contracts            Contract[]
 
+  // Indexes for performance
+  @@index([status])
+  @@index([leadId])
+  @@index([salesPersonId])
+  @@index([isLatestVersion])
+  @@index([createdAt])
+  @@index([validUntil])
   @@map("quotations")
 }
 
@@ -155,6 +176,7 @@ model QuotationService {
   serviceId    String
   service      Service   @relation(fields: [serviceId], references: [id])
 
+  @@index([quotationId])
   @@map("quotation_services")
 }
 
@@ -187,6 +209,12 @@ model Contract {
   
   services        ContractService[]
 
+  // Indexes for performance
+  @@index([status])
+  @@index([quotationId])
+  @@index([leadId])
+  @@index([salesPersonId])
+  @@index([createdAt])
   @@map("contracts")
 }
 
@@ -202,6 +230,7 @@ model ContractService {
   contractId   String
   contract     Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
 
+  @@index([contractId])
   @@map("contract_services")
 }
 
@@ -222,28 +251,13 @@ model LeadActivity {
   userId         String
   user           User         @relation(fields: [userId], references: [id])
 
+  // Indexes for performance
+  @@index([leadId])
+  @@index([userId])
+  @@index([activityType])
+  @@index([isCompleted])
+  @@index([createdAt])
   @@map("lead_activities")
-}
-
-model DashboardStats {
-  id                  String   @id @default(cuid())
-  date                DateTime @unique @default(now())
-  totalLeads          Int      @default(0)
-  hotLeads            Int      @default(0)
-  closedLeads         Int      @default(0)
-  lostLeads           Int      @default(0)
-  totalQuotations     Int      @default(0)
-  pendingQuotations   Int      @default(0)
-  approvedQuotations  Int      @default(0)
-  rejectedQuotations  Int      @default(0)
-  monthlyRevenue      Float    @default(0)
-  activeContracts     Int      @default(0)
-  leadConversionRate  Float    @default(0)
-  quoteSuccessRate    Float    @default(0)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  @@map("dashboard_stats")
 }
 
 model LeadSourceAnalytics {
@@ -256,6 +270,9 @@ model LeadSourceAnalytics {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  // Indexes for performance
+  @@index([area])
+  @@index([createdAt])
   @@map("lead_source_analytics")
 }
 
