@@ -1,0 +1,315 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole  @default(AGENT)
+  phone        String?
+  avatarUrl    String?
+  isActive     Boolean   @default(true)
+  lastLogin    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  leads         Lead[]
+  quotations    Quotation[]
+  contracts     Contract[]
+  leadActivities LeadActivity[]
+
+  @@map("users")
+}
+
+model Lead {
+  id                  String       @id @default(cuid())
+  customerName        String
+  customerType        CustomerType @default(RESIDENTIAL)
+  email               String
+  phone               String?
+  address             String
+  serviceDetails      String
+  problemDescription  String
+  priority            Priority     @default(MEDIUM)
+  status              LeadStatus   @default(LEAD)
+  estimatedValue      Float        @default(0)
+  leadSource          LeadSource   @default(WEBSITE_FORM)
+  lastContact         DateTime?
+  notes               String?
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  // Relations
+  salesPersonId String?
+  salesPerson   User?   @relation(fields: [salesPersonId], references: [id])
+  
+  services      LeadService[]
+  quotations    Quotation[]
+  contracts     Contract[]
+  activities    LeadActivity[]
+
+  @@map("leads")
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  basePrice   Float   @default(0)
+  category    String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  leadServices      LeadService[]
+  quotationServices QuotationService[]
+
+  @@map("services")
+}
+
+model LeadService {
+  id        String @id @default(cuid())
+  leadId    String
+  serviceId String
+  
+  lead      Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, serviceId])
+  @@map("lead_services")
+}
+
+model Quotation {
+  id                   String            @id @default(cuid())
+  quotationNumber      String            @unique
+  customerName         String
+  customerType         CustomerType      @default(RESIDENTIAL)
+  email                String
+  phone                String?
+  address              String
+  problemDescription   String
+  estimatedValue       Float             @default(0)
+  status               QuotationStatus   @default(PENDING)
+  validUntil           DateTime
+  notes                String?
+  
+  // Version control
+  parentQuotationId    String?
+  version              Int               @default(1)
+  isLatestVersion      Boolean           @default(true)
+  revisionReason       String?
+  
+  // Financial details
+  paymentTerms         String?
+  taxRate              Float             @default(0.1)
+  subtotal             Float             @default(0)
+  taxAmount            Float             @default(0)
+  totalAmount          Float             @default(0)
+  
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  // Relations
+  leadId               String
+  lead                 Lead              @relation(fields: [leadId], references: [id])
+  
+  salesPersonId        String
+  salesPerson          User              @relation(fields: [salesPersonId], references: [id])
+  
+  parentQuotation      Quotation?        @relation("QuotationRevisions", fields: [parentQuotationId], references: [id])
+  revisions            Quotation[]       @relation("QuotationRevisions")
+  
+  services             QuotationService[]
+  contracts            Contract[]
+
+  @@map("quotations")
+}
+
+model QuotationService {
+  id           String  @id @default(cuid())
+  name         String
+  description  String?
+  quantity     Int     @default(1)
+  unitPrice    Float   @default(0)
+  totalPrice   Float   @default(0)
+  included     Boolean @default(true)
+
+  // Relations
+  quotationId  String
+  quotation    Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  
+  serviceId    String
+  service      Service   @relation(fields: [serviceId], references: [id])
+
+  @@map("quotation_services")
+}
+
+model Contract {
+  id              String         @id @default(cuid())
+  contractNumber  String         @unique
+  customerName    String
+  customerType    CustomerType   @default(RESIDENTIAL)
+  email           String
+  phone           String?
+  address         String
+  status          ContractStatus @default(ACTIVE)
+  startDate       DateTime
+  endDate         DateTime?
+  totalValue      Float          @default(0)
+  paymentTerms    String
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations  
+  quotationId     String
+  quotation       Quotation      @relation(fields: [quotationId], references: [id])
+  
+  leadId          String
+  lead            Lead           @relation(fields: [leadId], references: [id])
+  
+  salesPersonId   String
+  salesPerson     User           @relation(fields: [salesPersonId], references: [id])
+  
+  services        ContractService[]
+
+  @@map("contracts")
+}
+
+model ContractService {
+  id           String  @id @default(cuid())
+  name         String
+  description  String?
+  quantity     Int     @default(1)
+  unitPrice    Float   @default(0)
+  totalPrice   Float   @default(0)
+
+  // Relations
+  contractId   String
+  contract     Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("contract_services")
+}
+
+model LeadActivity {
+  id             String       @id @default(cuid())
+  activityType   ActivityType @default(NOTE)
+  description    String
+  scheduledDate  DateTime?
+  completedDate  DateTime?
+  isCompleted    Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  leadId         String
+  lead           Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+
+  @@map("lead_activities")
+}
+
+model DashboardStats {
+  id                  String   @id @default(cuid())
+  date                DateTime @unique @default(now())
+  totalLeads          Int      @default(0)
+  hotLeads            Int      @default(0)
+  closedLeads         Int      @default(0)
+  lostLeads           Int      @default(0)
+  totalQuotations     Int      @default(0)
+  pendingQuotations   Int      @default(0)
+  approvedQuotations  Int      @default(0)
+  rejectedQuotations  Int      @default(0)
+  monthlyRevenue      Float    @default(0)
+  activeContracts     Int      @default(0)
+  leadConversionRate  Float    @default(0)
+  quoteSuccessRate    Float    @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("dashboard_stats")
+}
+
+model LeadSourceAnalytics {
+  id             String   @id @default(cuid())
+  area           String
+  count          Int      @default(0)
+  percentage     Float    @default(0)
+  revenue        Float    @default(0)
+  conversionRate Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("lead_source_analytics")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  SALES
+  AGENT
+}
+
+enum CustomerType {
+  RESIDENTIAL
+  COMMERCIAL
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum LeadStatus {
+  LEAD
+  QUOTE
+  CONTRACT
+}
+
+enum LeadSource {
+  WEBSITE_FORM
+  PHONE_CALL
+  REFERRAL
+  ADVERTISEMENT
+  OTHER
+}
+
+enum QuotationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REVISED
+}
+
+enum ContractStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  PAUSED
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  QUOTE_SENT
+  FOLLOW_UP
+  NOTE
+}
